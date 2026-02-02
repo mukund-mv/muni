@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>💗 Retro Valentine Quest 💗</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root{
+  --bg1:#fde2e4;
+  --bg2:#e0c3fc;
+  --accent:#ff8fab;
+  --accent2:#b8c0ff;
+  --frame:#222;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:'Press Start 2P', cursive;
+  overflow:hidden;
+  background:#111;
+}
+
+/* RETRO MONITOR FRAME */
+#frame{
+  position:fixed;
+  inset:0;
+  padding:22px;
+  background:linear-gradient(135deg,#333,#111);
+}
+
+#frame-inner{
+  position:relative;
+  width:100%;
+  height:100%;
+  background:linear-gradient(120deg,var(--bg1),var(--bg2));
+  border:10px solid #000;
+  box-shadow:
+    inset 0 0 40px rgba(0,0,0,.4),
+    0 0 0 6px #555;
+  overflow:hidden;
+}
+
+/* CRT scanlines */
+#frame-inner::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.07),
+    rgba(0,0,0,0.07) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events:none;
+  z-index:10;
+}
+
+/* Background dots network */
+#bg-net{
+  position:absolute;
+  inset:0;
+  z-index:0;
+}
+
+/* Glow */
+#glow{
+  position:absolute;
+  inset:-30%;
+  background:radial-gradient(circle at center,rgba(255,255,255,.35),transparent 60%);
+  transition:transform .1s;
+  z-index:0;
+}
+
+/* Floating decor */
+.floater{
+  position:absolute;
+  opacity:.75;
+  pointer-events:none;
+  animation:float linear infinite;
+}
+
+@keyframes float{
+  from{transform:translateY(110vh)}
+  to{transform:translateY(-120px)}
+}
+
+.heart{width:42px}
+
+/* Retro HUD corners */
+.hud{
+  position:absolute;
+  width:42px;
+  height:42px;
+  border:4px solid var(--accent);
+  z-index:5;
+}
+.hud.tl{top:10px;left:10px;border-right:none;border-bottom:none}
+.hud.tr{top:10px;right:10px;border-left:none;border-bottom:none}
+.hud.bl{bottom:10px;left:10px;border-right:none;border-top:none}
+.hud.br{bottom:10px;right:10px;border-left:none;border-top:none}
+
+/* Edge GIFs */
+.edge{
+  position:absolute;
+  width:150px;
+  z-index:4;
+  animation:wobble 3s ease-in-out infinite;
+}
+.edge.left{left:16px;bottom:16px}
+.edge.right{right:16px;top:16px}
+
+@keyframes wobble{
+  0%,100%{transform:rotate(-2deg)}
+  50%{transform:rotate(2deg)}
+}
+
+/* JOYSTICK */
+#joystick{
+  position:absolute;
+  bottom:18px;
+  right:18px;
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:#222;
+  box-shadow:inset -4px -4px 0 #000,inset 4px 4px 0 #555;
+  z-index:6;
+}
+
+#stick{
+  position:absolute;
+  top:18px;left:18px;
+  width:44px;height:44px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:4px 4px 0 #000;
+  transition:.1s;
+}
+
+/* Main */
+.container{
+  position:relative;
+  z-index:3;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+.stage{
+  display:none;
+  max-width:900px;
+  width:100%;
+  background:rgba(255,255,255,.92);
+  border:6px solid var(--accent2);
+  padding:24px;
+  box-shadow:10px 10px 0 rgba(0,0,0,.25);
+}
+.stage.active{display:block}
+
+.robot-area{
+  display:flex;
+  gap:24px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.robot{width:140px;image-rendering:pixelated;animation:wobble 2.5s infinite}
+
+.speech{border:4px solid #000;padding:16px;background:#fff}
+
+button{
+  font-family:'Press Start 2P', cursive;
+  background:var(--accent);
+  border:none;
+  color:#fff;
+  padding:12px 16px;
+  margin-top:12px;
+  cursor:pointer;
+  box-shadow:4px 4px 0 #000;
+}
+
+input{font-family:'Press Start 2P', cursive;width:100%;padding:10px;border:3px solid #000;margin-top:8px}
+
+.final{text-align:center}
+.turtle{width:160px;image-rendering:pixelated;animation:wobble 2s infinite}
+
+@media(max-width:600px){
+  .edge{width:120px}
+  #joystick{display:none}
+}
+</style>
+</head>
+
+<body>
+<div id="frame">
+  <div id="frame-inner">
+
+    <canvas id="bg-net"></canvas>
+    <div id="glow"></div>
+
+    <!-- HUD -->
+    <div class="hud tl"></div><div class="hud tr"></div>
+    <div class="hud bl"></div><div class="hud br"></div>
+
+    <!-- Floating hearts -->
+    <div id="decor"></div>
+
+    <!-- Edge GIFs -->
+    <img src="assets/couple_bench.gif" class="edge left">
+    <img src="assets/couple_cuddle.gif" class="edge right">
+
+    <!-- Joystick -->
+    <div id="joystick"><div id="stick"></div></div>
+
+    <div class="container">
+
+      <div class="stage active" id="stage1">
+        <div class="robot-area">
+          <img src="assets/robot_pixel.png" class="robot">
+          <div class="speech">
+            <p>HELLO PLAYER 💗</p>
+            <p>READY TO BEGIN THE VALENTINE QUEST?</p>
+            <button onclick="nextStage(2)">START ▶</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage" id="stage2">
+        <div class="robot-area">
+          <img src="assets/robot_pixel.png" class="robot">
+          <div class="speech">
+            <p>SECRET WORD?</p>
+            <input id="answer1">
+            <button onclick="checkAnswer1()">CONFIRM</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage" id="stage3">
+        <div class="robot-area">
+          <img src="assets/robot_pixel.png" class="robot">
+          <div class="speech">
+            <p>ENTER LOVE PIN 🔐</p>
+            <input id="pin" type="password">
+            <button onclick="checkPin()">UNLOCK</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage final" id="stage4">
+        <h2>💗 WILL YOU BE MY VALENTINE? 💗</h2>
+        <img src="assets/turtle_valentine.gif" class="turtle"><br>
+        <button id="yes">YES 💕</button>
+        <button id="no">NO ❌</button>
+      </div>
+
+      <div class="stage" id="stage5">
+        <div class="speech" id="letter"></div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+function nextStage(n){
+  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
+  document.getElementById('stage'+n).classList.add('active');
+}
+
+function checkAnswer1(){
+  if(answer1.value.toLowerCase()==='love'||answer1.value.toLowerCase()==='us') nextStage(3);
+  else alert('❌ TRY AGAIN');
+}
+
+function checkPin(){
+  if(pin.value==='143') nextStage(4);
+  else alert('❌ WRONG PIN');
+}
+
+/* Running NO */
+const no=document.getElementById('no');
+no.onmouseover=()=>{
+  no.style.position='relative';
+  no.style.left=Math.random()*240-120+'px';
+  no.style.top=Math.random()*200-100+'px';
+}
+no.onclick=()=>{[yes.innerHTML,no.innerHTML]=[no.innerHTML,yes.innerHTML];}
+
+yes.onclick=()=>{nextStage(5);typeLetter();}
+
+/* Letter */
+const text=`Hey love 💗\n\nI turned Valentine’s Day into a little game,\nbecause with you everything feels fun.\n\nI choose you. Every level. Every day.\n\nHappy Valentine’s Day 💕`;
+let i=0;
+function typeLetter(){if(i<text.length){letter.textContent+=text[i++];setTimeout(typeLetter,40)}}
+
+/* Floating hearts */
+const decor=document.getElementById('decor');
+for(let i=0;i<40;i++){
+  const h=document.createElement('img');
+  h.src=Math.random()>.5?'assets/heart_pixel_pink.png':'assets/heart_pixel_red.webp';
+  h.className='floater heart';
+  h.style.left=Math.random()*100+'%';
+  h.style.animationDuration=8+Math.random()*14+'s';
+  h.style.animationDelay=Math.random()*-20+'s';
+  decor.appendChild(h);
+}
+
+/* Background network */
+const canvas=document.getElementById('bg-net');
+const ctx=canvas.getContext('2d');
+let dots=[];
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
+window.onresize=resize;resize();
+for(let i=0;i<60;i++)dots.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight});
+
+function drawNet(mx,my){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='rgba(255,255,255,.4)';
+  dots.forEach(d=>{
+    ctx.beginPath();ctx.arc(d.x,d.y,2,0,Math.PI*2);ctx.fill();
+    dots.forEach(o=>{
+      const dist=Math.hypot(d.x-o.x,d.y-o.y);
+      if(dist<120){ctx.strokeStyle='rgba(255,255,255,.15)';ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(o.x,o.y);ctx.stroke();}
+    });
+    d.x+=(mx-d.x)*0.0003;
+    d.y+=(my-d.y)*0.0003;
+  });
+}
+
+/* Mouse interaction */
+document.addEventListener('mousemove',e=>{
+  const x=e.clientX/window.innerWidth*30;
+  const y=e.clientY/window.innerHeight*30;
+  glow.style.transform=`translate(${x}px,${y}px)`;
+  stick.style.transform=`translate(${(e.clientX/window.innerWidth-.5)*10}px,${(e.clientY/window.innerHeight-.5)*10}px)`;
+  drawNet(e.clientX,e.clientY);
+});
+</script>
+</body>
+</html>
