@@ -214,8 +214,8 @@ input{font-family:'Press Start 2P', cursive;width:100%;padding:10px;border:3px s
     <div id="decor"></div>
 
     <!-- Edge GIFs -->
-    <img src="assets/couple_bench.gif" class="edge left">
-    <img src="assets/couple_cuddle.gif" class="edge right">
+    <img src="couple_bench.gif" class="edge left">
+    <img src="couple_cuddle.gif" class="edge right">
 
     <!-- Joystick -->
     <div id="joystick"><div id="stick"></div></div>
@@ -224,7 +224,7 @@ input{font-family:'Press Start 2P', cursive;width:100%;padding:10px;border:3px s
 
       <div class="stage active" id="stage1">
         <div class="robot-area">
-          <img src="assets/robot_pixel.png" class="robot">
+          <img src="robot_pixel.png" class="robot">
           <div class="speech">
             <p>HELLO PLAYER 💗</p>
             <p>READY TO BEGIN THE VALENTINE QUEST?</p>
@@ -235,7 +235,7 @@ input{font-family:'Press Start 2P', cursive;width:100%;padding:10px;border:3px s
 
       <div class="stage" id="stage2">
         <div class="robot-area">
-          <img src="assets/robot_pixel.png" class="robot">
+          <img src="robot_pixel.png" class="robot">
           <div class="speech">
             <p>SECRET WORD?</p>
             <input id="answer1">
@@ -246,7 +246,7 @@ input{font-family:'Press Start 2P', cursive;width:100%;padding:10px;border:3px s
 
       <div class="stage" id="stage3">
         <div class="robot-area">
-          <img src="assets/robot_pixel.png" class="robot">
+          <img src="robot_pixel.png" class="robot">
           <div class="speech">
             <p>ENTER LOVE PIN 🔐</p>
             <input id="pin" type="password">
@@ -257,7 +257,7 @@ input{font-family:'Press Start 2P', cursive;width:100%;padding:10px;border:3px s
 
       <div class="stage final" id="stage4">
         <h2>💗 WILL YOU BE MY VALENTINE? 💗</h2>
-        <img src="assets/turtle_valentine.gif" class="turtle"><br>
+        <img src="turtle_valentine.gif" class="turtle"><br>
         <button id="yes">YES 💕</button>
         <button id="no">NO ❌</button>
       </div>
@@ -307,7 +307,7 @@ function typeLetter(){if(i<text.length){letter.textContent+=text[i++];setTimeout
 const decor=document.getElementById('decor');
 for(let i=0;i<40;i++){
   const h=document.createElement('img');
-  h.src=Math.random()>.5?'assets/heart_pixel_pink.png':'assets/heart_pixel_red.webp';
+  h.src=Math.random()>.5?'heart_pixel_pink.png':'heart_pixel_red.webp';
   h.className='floater heart';
   h.style.left=Math.random()*100+'%';
   h.style.animationDuration=8+Math.random()*14+'s';
@@ -347,4 +347,5 @@ document.addEventListener('mousemove',e=>{
 });
 </script>
 </body>
+
 </html>
